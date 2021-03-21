@@ -1,0 +1,94 @@
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+<script>
+$(document).ready(function(){
+  function pageredirecting(){
+        window.location.replace("/");
+    }
+  function pageRedirect() {
+    window.location.replace("/questions1");
+    }
+    $('input:button').click(function(){
+        var username1=$('input:text').val()
+        var password1=$('input:password').val()
+        const data1 = {
+            username : username1,
+            password : password1
+        }
+        $.ajax({
+            type: "POST",
+            url: 'http://127.0.0.1:8000/auth/token/login',
+            data: data1,
+            success: function(data){
+                localStorage.setItem('token',"Token "+data.auth_token)
+                $.ajax({
+                  type: 'GET',
+                  url : '/auth/users/me/',
+                  headers: {"Authorization": localStorage.getItem('token')},
+                  success : function(data){
+                  localStorage.setItem('userid',data.id)
+                  if(data.username=="project"){
+                    localStorage.setItem('username',data.username)
+                    pageredirecting()()
+                  }
+                  else{
+                    localStorage.setItem('username',data.username)
+                  pageredirecting()
+                  }
+            }
+      
+    })
+                    
+            },   
+            
+            error: function(data){
+                $('#error').html("Invalid Credentials").css({"color":"red"})
+            }         
+        });
+        
+    })
+    
+
+
+})
+
+
+
+</script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+</head>
+<body>
+</br>
+</br>
+<div class="container">
+<div class="carding"/>
+<div class="card" style="width: 70rem"/>
+<div class="card text-center border border-2" >
+<div class="card-header"><h1>Quizmate</h1></div></br></br>
+<form class="container">
+  <div class="mb-3">
+    </div>
+  <div class="mb-3">
+    <input type="text" class="form-control" placeholder="enter your username" name="username" /></br>
+  </div>
+  <div class="mb-3">
+        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="enter your password" name="password" /></br>
+  </div>
+  <div class="mb-3">
+<input type="button" class="btn btn-dark" value="login"/></br></br>
+<span id="error">
+</span>
+<div class="alert alert-warning" role="alert">
+<span>don't have an account <a href="{% url 'register' %}">click here!</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</form>
+
+</body>
+</html>
